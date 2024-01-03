@@ -119,11 +119,11 @@ struct ButtonListView: View {
      @StateObject var toggleSet = ToggleSettings()
      */
     @State var indexArray = [1, 2, 3, 4, 5, 6]
-    
+    @State private var showingAlert = false
     @State var selectedIndex: Int? = nil
     
     //@Binding var leftSelected: Bool
-    @State private var leftSelected = true
+    @State var leftSelected: Bool
     
     var body: some View {
 
@@ -140,10 +140,16 @@ struct ButtonListView: View {
             }
             .bold()
             //.offset(x:-20, y: 0)
-                
+            
             // lumbar rows
-            ForEach(indexArray, id: \.self) { item in
-                SelectionCell(index: item, leftSelected: $leftSelected, selectedIndex: self.$selectedIndex)
+            if leftSelected {
+                ForEach(indexArray, id: \.self) { item in
+                    SelectionCell(index: item, leftSelected: $leftSelected, selectedIndex: self.$selectedIndex)
+                }
+            } else {
+                ForEach(indexArray, id: \.self) { item in
+                    SelectionCell(index: item, leftSelected: $leftSelected, selectedIndex: self.$selectedIndex)
+                }
             }
             Button {
                 let newNum = indexArray.count + 1
@@ -153,37 +159,52 @@ struct ButtonListView: View {
                 Label("Add", systemImage: "plus")
                     .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
             }
-            // left right buttons
-            let screenWidth: CGFloat = UIScreen.main.bounds.width
-            //let screenHeight: CGFloat = UIScreen.main.bounds.height
-            let bttnWidth = screenWidth * 0.40
-            let bttnHeight = 50.0
-            HStack {
-                SelectButton(height: bttnHeight, width: bttnWidth,
-                             isSelected: $leftSelected,
-                             text: "LEFT")
-                .onTapGesture {
-                    leftSelected.toggle()
-                    print("left, leftSelected: \(leftSelected)")
-                    //toggleSet.isLeftSelected  = leftSelected
+            VStack {
+                // left right buttons
+                let screenWidth: CGFloat = UIScreen.main.bounds.width
+                //let screenHeight: CGFloat = UIScreen.main.bounds.height
+                let bttnWidth = screenWidth * 0.40
+                let bttnHeight = 50.0
+                Spacer()
+                HStack {
+                    SelectButton(height: bttnHeight, width: bttnWidth,
+                                 isSelected: $leftSelected,
+                                 text: "LEFT")
+                    .onTapGesture {
+                        leftSelected = true
+                        print("left, leftSelected: \(leftSelected)")
+                        //toggleSet.isLeftSelected  = leftSelected
+                    }
+                    SelectButton(height: bttnHeight, width: bttnWidth,
+                                 isSelected: $leftSelected.not ,
+                                 text: "RIGHT")
+                    .onTapGesture {
+                        leftSelected = false
+                        //toggleSet.isLeftSelected  = leftSelected
+                    }
                 }
-                SelectButton(height: bttnHeight, width: bttnWidth,
-                             isSelected: $leftSelected.not ,
-                             text: "RIGHT")
-                .onTapGesture {
-                    leftSelected.toggle()
-                    //toggleSet.isLeftSelected  = leftSelected
+                
+                Button("CLEAR ALL") {
+                    showingAlert = true
                 }
+                .alert(isPresented: $showingAlert) {
+                    return Alert(title: Text("Are you sure?"), primaryButton: .cancel(), secondaryButton: .default(Text("Clear Data"), action: {
+                        //clearAllInputs()
+                    }))
+                }
+                .font(.headline)
+                .frame(width: screenWidth * 0.82, height: bttnHeight, alignment: .center)
+                .background( Color.gray.opacity(0.3))
+                .border(Color.gray.opacity(0.3), width: 2)
+                .foregroundColor(.black)
+                .cornerRadius(5)
+            }.onAppear() {
+                // reset array
+                //UserDefaults.standard.set([1,2,3,4,5,6], forKey: "IntArray")
+                let array = UserDefaults.standard.object(forKey:"IntArray") as? [Int] ?? [1,2,3,4,5,6]
+                indexArray = array
+                print("index arrary at launch is \(indexArray)")
             }
-        }.onAppear() {
-            // reset array
-            //UserDefaults.standard.set([1,2,3,4,5,6], forKey: "IntArray")
-            let array = UserDefaults.standard.object(forKey:"IntArray") as? [Int] ?? [1,2,3,4,5,6]
-            indexArray = array
-            print("index arrary at launch is \(indexArray)")
-
-            
-           
         }
     }
 }
@@ -217,5 +238,5 @@ extension Binding where Value == Bool {
     }
 }
 #Preview {
-    ButtonListView()
+    ButtonListView( leftSelected: true)
 }

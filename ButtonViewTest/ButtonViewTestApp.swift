@@ -11,7 +11,7 @@ import SwiftUI
 struct ButtonViewTestApp: App {
     var body: some Scene {
         WindowGroup {
-            ButtonListView()
+            ButtonListView( leftSelected: true)
         }
     }
 }
