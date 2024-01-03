@@ -34,7 +34,7 @@ struct SelectionCell: View {
         let axSelected = "Selected" + ButtonStore(lumbarNum: index, leftSelected: leftSelected).axKeys()
         let sgSelected = "Selected" + ButtonStore(lumbarNum: index, leftSelected: leftSelected).sgKeys()
         @AppStorage(axSelected)  var axSelectedVal = 1.0
-        @AppStorage(sgKeysLeft)  var sgSelectedVal = 1.0
+        @AppStorage(sgSelected)  var sgSelectedVal = 1.0
         
         HStack {
             Spacer(minLength: 30)
@@ -122,7 +122,8 @@ struct ButtonListView: View {
     
     @State var selectedIndex: Int? = nil
     
-    @Binding var leftSelected: Bool
+    //@Binding var leftSelected: Bool
+    @State private var leftSelected = true
     
     var body: some View {
 
@@ -152,6 +153,28 @@ struct ButtonListView: View {
                 Label("Add", systemImage: "plus")
                     .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
             }
+            // left right buttons
+            let screenWidth: CGFloat = UIScreen.main.bounds.width
+            //let screenHeight: CGFloat = UIScreen.main.bounds.height
+            let bttnWidth = screenWidth * 0.40
+            let bttnHeight = 50.0
+            HStack {
+                SelectButton(height: bttnHeight, width: bttnWidth,
+                             isSelected: $leftSelected,
+                             text: "LEFT")
+                .onTapGesture {
+                    leftSelected.toggle()
+                    print("left, leftSelected: \(leftSelected)")
+                    //toggleSet.isLeftSelected  = leftSelected
+                }
+                SelectButton(height: bttnHeight, width: bttnWidth,
+                             isSelected: $leftSelected.not ,
+                             text: "RIGHT")
+                .onTapGesture {
+                    leftSelected.toggle()
+                    //toggleSet.isLeftSelected  = leftSelected
+                }
+            }
         }.onAppear() {
             // reset array
             //UserDefaults.standard.set([1,2,3,4,5,6], forKey: "IntArray")
@@ -159,10 +182,40 @@ struct ButtonListView: View {
             indexArray = array
             print("index arrary at launch is \(indexArray)")
 
+            
+           
         }
     }
 }
+struct SelectButton: View {
 
+    var height: Double
+    var width: Double
+    @Binding var isSelected: Bool
+    @State var text: String
+
+    var body: some View {
+        ZStack {
+            Text(text)
+                .font(.headline)
+                .frame(width: width, height: height, alignment: .center)
+                .background(isSelected ?  Color.blue.opacity(0.5) : Color.gray.opacity(0.3))
+                .border(isSelected ?  Color.black.opacity(0.5) : Color.gray.opacity(0.3), width: 2)
+                .foregroundColor(.black)
+                .cornerRadius(5)
+            }
+    }
+}
+
+extension Binding where Value == Bool {
+    // nagative bool binding same as `!Value`
+    var not: Binding<Value> {
+        Binding<Value> (
+            get: { !self.wrappedValue },
+            set: { self.wrappedValue = $0}
+        )
+    }
+}
 #Preview {
-    ButtonListView(leftSelected: .constant(false))
+    ButtonListView()
 }
