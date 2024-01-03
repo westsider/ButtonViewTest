@@ -8,35 +8,43 @@
 import SwiftUI
 
 struct SelectionCell: View {
-
-    @Binding var leftSelected: Bool
+    
     let index: Int
+    @Binding var leftSelected: Bool
     @Binding var selectedIndex: Int?
 
-    // set wide input
     @State private var textName : String = "L1"
     @State private var textAxial : String = "1.0"
     @State private var textSagittal : String = "10.0"
-    
-    
-    // persist selected row
+    @FocusState private var focusI: Bool
     @FocusState private var focusS: Bool
     @FocusState private var focusA: Bool
     
     var body: some View {
         
         // persist values
+        let lumbarkey = ButtonStore(lumbarNum: index, leftSelected: leftSelected).indexKeys()
         let axKeysLeft = ButtonStore(lumbarNum: index, leftSelected: leftSelected).axKeys()
         let sgKeysLeft = ButtonStore(lumbarNum: index, leftSelected: leftSelected).sgKeys()
+        @AppStorage(lumbarkey)  var lumbarLeft = "L\(index)"
         @AppStorage(axKeysLeft)  var axialLeft = 1.0
         @AppStorage(sgKeysLeft)  var sagitalLeft = 1.0
         
         HStack {
             Spacer()
-            TextField("LumbarName", text: $textName)
-                .onAppear() {
-                    textName = "L\(index)"
+            TextField("Lumbar", text: $textName)
+                .focused($focusI)
+                .onChange(of: focusI) { focused in
+                    if focused {
+                        textName = ""
+                    } else {
+                        lumbarLeft = textName
+                    }
                 }
+                .onAppear() {
+                    textName = lumbarLeft
+                }
+                .background(focusI ?  Color.white : Color.white.opacity(0.1))
             Spacer()
             TextField("Axial", text: $textAxial)
                 .focused($focusA)
@@ -56,6 +64,8 @@ struct SelectionCell: View {
                 .onAppear() {
                     textAxial = "\(axialLeft)"
                 }
+                .background(focusA ?  Color.white : Color.white.opacity(0.1))
+                .keyboardType(.numbersAndPunctuation)
             Spacer()
             TextField("Sagittal", text: $textSagittal)
                 .focused($focusS)
@@ -76,6 +86,8 @@ struct SelectionCell: View {
                 .onAppear() {
                     textSagittal = "\(sagitalLeft)"
                 }
+                .background(focusS ?  Color.white : Color.white.opacity(0.1))
+                .keyboardType(.numbersAndPunctuation)
         }
         .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.4) : Color.white)
         .onTapGesture {
@@ -95,13 +107,14 @@ struct ButtonListView: View {
      @State private var showingAlert = false
      @StateObject var toggleSet = ToggleSettings()
      */
-    @State var names = [1, 2, 3, 4]
+    @State var indexArray = [1, 2, 3, 4, 5, 6]
     
     @State var selectedIndex: Int? = nil
     
     @Binding var leftSelected: Bool
     
     var body: some View {
+
         List {
             //  Title Row
             HStack {
@@ -110,22 +123,31 @@ struct ButtonListView: View {
                 Spacer()
                 Text("AX")
                 Spacer()
-                Text("SG")
+                Text("SG").offset(x: 10, y: 0)
                 Spacer()
             }
             .bold()
+            .offset(x:-20, y: 0)
                 
             // lumbar rows
-            ForEach(names, id: \.self) { item in
-                SelectionCell(leftSelected: $leftSelected, index: item, selectedIndex: self.$selectedIndex)
+            ForEach(indexArray, id: \.self) { item in
+                SelectionCell(index: item, leftSelected: $leftSelected, selectedIndex: self.$selectedIndex)
             }
             Button {
-                let newNum = names.count + 1
-                names.append(newNum)
+                let newNum = indexArray.count + 1
+                indexArray.append(newNum)
+                UserDefaults.standard.set(indexArray, forKey: "IntArray")
             } label: {
                 Label("Add", systemImage: "plus")
                     .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
             }
+        }.onAppear() {
+            // reset array
+            //UserDefaults.standard.set([1,2,3,4,5,6], forKey: "IntArray")
+            let array = UserDefaults.standard.object(forKey:"IntArray") as? [Int] ?? [1,2,3,4,5,6]
+            indexArray = array
+            print("index arrary at launch is \(indexArray)")
+
         }
     }
 }

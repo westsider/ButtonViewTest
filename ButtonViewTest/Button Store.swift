@@ -77,6 +77,11 @@ class ButtonStore {
         return sideStr
     }
     
+    func indexKeys() -> String {
+        let lumbarStr = setLumbar()
+        let sideStr = setSide()
+        return sideStr + lumbarStr
+    }
     func axKeys() -> String {
         let lumbarStr = setLumbar()
         let sideStr = setSide()
