@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SelectionCell: View {
 
+    @Binding var leftSelected: Bool
     let index: Int
     @Binding var selectedIndex: Int?
 
@@ -17,11 +18,19 @@ struct SelectionCell: View {
     @State private var textAxial : String = "1.0"
     @State private var textSagittal : String = "10.0"
     
-    // persist values
     
     // persist selected row
+    @FocusState private var focusS: Bool
+    @FocusState private var focusA: Bool
     
     var body: some View {
+        
+        // persist values
+        let axKeysLeft = ButtonStore(lumbarNum: index, leftSelected: leftSelected).axKeys()
+        let sgKeysLeft = ButtonStore(lumbarNum: index, leftSelected: leftSelected).sgKeys()
+        @AppStorage(axKeysLeft)  var axialLeft = 1.0
+        @AppStorage(sgKeysLeft)  var sagitalLeft = 1.0
+        
         HStack {
             Spacer()
             TextField("LumbarName", text: $textName)
@@ -29,14 +38,43 @@ struct SelectionCell: View {
                     textName = "L\(index)"
                 }
             Spacer()
-            TextField("textAxial", text: $textAxial)
+            TextField("Axial", text: $textAxial)
+                .focused($focusA)
+                .onChange(of: focusA) { focused in
+                    if focused {
+                        textAxial = ""
+                    } else {
+                        axialLeft = Utilities.getDoubleFrom(string: textAxial)
+                        // remove incorrect characters
+                        let filtered = textAxial.filter { "-.0123456789".contains($0) }
+                        if filtered != textAxial {
+                            self.textAxial = filtered
+                            axialLeft = Utilities.getDoubleFrom(string: filtered)
+                        }
+                    }
+                }
                 .onAppear() {
-                    textAxial = textAxial
+                    textAxial = "\(axialLeft)"
                 }
             Spacer()
-            TextField("textSagittal", text: $textSagittal)
+            TextField("Sagittal", text: $textSagittal)
+                .focused($focusS)
+                .onChange(of: focusS) { focused in
+                    if focused {
+                        textSagittal = ""
+                    } else {
+                        sagitalLeft = Utilities.getDoubleFrom(string: textSagittal)
+                        // remove incorrect characters
+                        let filtered = textSagittal.filter { "-.0123456789".contains($0) }
+                        if filtered != textSagittal {
+                            self.textSagittal = filtered
+                            //print("converted \(textSagittal)")
+                            sagitalLeft = Utilities.getDoubleFrom(string: filtered)
+                        }
+                    }
+                }
                 .onAppear() {
-                    textAxial = textAxial
+                    textSagittal = "\(sagitalLeft)"
                 }
         }
         .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.4) : Color.white)
@@ -61,35 +99,37 @@ struct ButtonListView: View {
     
     @State var selectedIndex: Int? = nil
     
+    @Binding var leftSelected: Bool
+    
     var body: some View {
         List {
             //  Title Row
-                HStack {
-                    Spacer()
-                    Text("")
-                    Spacer()
-                    Text("AX")
-                    Spacer()
-                    Text("SG")
-                    Spacer()
-                }
-                .bold()
-                
-                // lumbar rows
-                ForEach(names, id: \.self) { item in
-                    SelectionCell(index: item, selectedIndex: self.$selectedIndex)
-                }
-                Button {
-                    let newNum = names.count + 1
-                    names.append(newNum)
-                } label: {
-                    Label("Add", systemImage: "plus")
-                        .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                }
+            HStack {
+                Spacer()
+                Text("")
+                Spacer()
+                Text("AX")
+                Spacer()
+                Text("SG")
+                Spacer()
             }
+            .bold()
+                
+            // lumbar rows
+            ForEach(names, id: \.self) { item in
+                SelectionCell(leftSelected: $leftSelected, index: item, selectedIndex: self.$selectedIndex)
+            }
+            Button {
+                let newNum = names.count + 1
+                names.append(newNum)
+            } label: {
+                Label("Add", systemImage: "plus")
+                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
+            }
+        }
     }
 }
 
 #Preview {
-    ButtonListView()
+    ButtonListView(leftSelected: .constant(false))
 }

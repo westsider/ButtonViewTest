@@ -11,6 +11,7 @@
 		98D417972B45ABD700C0C201 /* ButtonListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D417962B45ABD700C0C201 /* ButtonListView.swift */; };
 		98D417992B45ABD800C0C201 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98D417982B45ABD800C0C201 /* Assets.xcassets */; };
 		98D4179C2B45ABD800C0C201 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 98D4179B2B45ABD800C0C201 /* Preview Assets.xcassets */; };
+		98D417A32B45C5FF00C0C201 /* Button Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D417A22B45C5FF00C0C201 /* Button Store.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		98D417962B45ABD700C0C201 /* ButtonListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonListView.swift; sourceTree = "<group>"; };
 		98D417982B45ABD800C0C201 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		98D4179B2B45ABD800C0C201 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		98D417A22B45C5FF00C0C201 /* Button Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button Store.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			children = (
 				98D417942B45ABD700C0C201 /* ButtonViewTestApp.swift */,
 				98D417962B45ABD700C0C201 /* ButtonListView.swift */,
+				98D417A22B45C5FF00C0C201 /* Button Store.swift */,
 				98D417982B45ABD800C0C201 /* Assets.xcassets */,
 				98D4179A2B45ABD800C0C201 /* Preview Content */,
 			);
@@ -137,6 +140,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D417A32B45C5FF00C0C201 /* Button Store.swift in Sources */,
 				98D417972B45ABD700C0C201 /* ButtonListView.swift in Sources */,
 				98D417952B45ABD700C0C201 /* ButtonViewTestApp.swift in Sources */,
 			);
@@ -280,6 +284,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -309,6 +314,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
