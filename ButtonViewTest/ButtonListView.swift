@@ -97,7 +97,9 @@ struct SelectionCell: View {
                 .background(focusS ?  Color.white : Color.white.opacity(0.1))
                 .keyboardType(.numbersAndPunctuation)
         }
-        .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.5) : Color.white)
+        .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.5) : Color.gray.opacity(0.1))
+        //.border(index == selectedIndex ?  Color.black.opacity(0.5) : Color.gray.opacity(0.3), width: 2)
+        
         .onTapGesture {
             self.selectedIndex = self.index
             let indexStr = String(describing: self.index)
@@ -111,18 +113,9 @@ struct SelectionCell: View {
 
 struct ButtonListView: View {
 
-    /*
-     let screenWidth: CGFloat
-     @State private var toggleManager = ToggleManager()
-     @State private var leftSelected = true
-     @State private var showingAlert = false
-     @StateObject var toggleSet = ToggleSettings()
-     */
     @State var indexArray = [1, 2, 3, 4, 5, 6]
     @State private var showingAlert = false
     @State var selectedIndex: Int? = nil
-    
-    //@Binding var leftSelected: Bool
     @State var leftSelected: Bool
     
     var body: some View {
@@ -173,14 +166,12 @@ struct ButtonListView: View {
                     .onTapGesture {
                         leftSelected = true
                         print("left, leftSelected: \(leftSelected)")
-                        //toggleSet.isLeftSelected  = leftSelected
                     }
                     SelectButton(height: bttnHeight, width: bttnWidth,
                                  isSelected: $leftSelected.not ,
                                  text: "RIGHT")
                     .onTapGesture {
                         leftSelected = false
-                        //toggleSet.isLeftSelected  = leftSelected
                     }
                 }
                 
