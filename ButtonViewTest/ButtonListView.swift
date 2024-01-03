@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SelectionCell: View {
 
-    let lumbarName: String
-    @Binding var selectedLumbar: String?
+    let index: Int
+    @Binding var selectedIndex: Int?
 
     // set wide input
     @State private var textName : String = "L1"
@@ -26,7 +26,7 @@ struct SelectionCell: View {
             Spacer()
             TextField("LumbarName", text: $textName)
                 .onAppear() {
-                    textName = lumbarName
+                    textName = "L\(index)"
                 }
             Spacer()
             TextField("textAxial", text: $textAxial)
@@ -39,10 +39,11 @@ struct SelectionCell: View {
                     textAxial = textAxial
                 }
         }
-        .listRowBackground(lumbarName == selectedLumbar ? Color.blue.opacity(0.4) : Color.white)
+        .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.4) : Color.white)
         .onTapGesture {
-            self.selectedLumbar = self.lumbarName
-            print("selected lumbar \(String(describing: self.selectedLumbar))")
+            self.selectedIndex = self.index
+            let indexStr = String(describing: self.index)
+            print("selected index \(indexStr)")
         }
     }
 }
@@ -56,13 +57,13 @@ struct ButtonListView: View {
      @State private var showingAlert = false
      @StateObject var toggleSet = ToggleSettings()
      */
-    @State var names = ["L1", "L2", "L3", "L4"]
+    @State var names = [1, 2, 3, 4]
     
-    @State var selectedFruit: String? = nil
+    @State var selectedIndex: Int? = nil
     
     var body: some View {
         List {
-            //VStack {
+            //  Title Row
                 HStack {
                     Spacer()
                     Text("")
@@ -74,21 +75,18 @@ struct ButtonListView: View {
                 }
                 .bold()
                 
-                
+                // lumbar rows
                 ForEach(names, id: \.self) { item in
-                    SelectionCell(lumbarName: item, selectedLumbar: self.$selectedFruit)
+                    SelectionCell(index: item, selectedIndex: self.$selectedIndex)
                 }
                 Button {
                     let newNum = names.count + 1
-                    names.append("L\(newNum)")
+                    names.append(newNum)
                 } label: {
                     Label("Add", systemImage: "plus")
                         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-                    
                 }
             }
-       // }
-        
     }
 }
 
