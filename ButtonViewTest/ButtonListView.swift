@@ -30,8 +30,16 @@ struct SelectionCell: View {
         @AppStorage(axKeysLeft)  var axialLeft = 1.0
         @AppStorage(sgKeysLeft)  var sagitalLeft = 1.0
         
+        //get values for lumbar selected and left / right selected
+        let axSelected = "Selected" + ButtonStore(lumbarNum: index, leftSelected: leftSelected).axKeys()
+        let sgSelected = "Selected" + ButtonStore(lumbarNum: index, leftSelected: leftSelected).sgKeys()
+        @AppStorage(axSelected)  var axSelectedVal = 1.0
+        @AppStorage(sgKeysLeft)  var sgSelectedVal = 1.0
+        
         HStack {
-            Spacer()
+            Spacer(minLength: 30)
+            Image(systemName: "lines.measurement.vertical")
+            Spacer(minLength: 50)
             TextField("Lumbar", text: $textName)
                 .focused($focusI)
                 .onChange(of: focusI) { focused in
@@ -89,11 +97,14 @@ struct SelectionCell: View {
                 .background(focusS ?  Color.white : Color.white.opacity(0.1))
                 .keyboardType(.numbersAndPunctuation)
         }
-        .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.4) : Color.white)
+        .listRowBackground(index == selectedIndex ? Color.blue.opacity(0.5) : Color.white)
         .onTapGesture {
             self.selectedIndex = self.index
             let indexStr = String(describing: self.index)
-            print("selected index \(indexStr)")
+            print("selected index \(indexStr) ax: \(axialLeft) sg: \(sagitalLeft)")
+            // persist the values for use in crosshairs
+            axSelectedVal = axialLeft
+            sgSelectedVal = sagitalLeft
         }
     }
 }
@@ -118,16 +129,16 @@ struct ButtonListView: View {
         List {
             //  Title Row
             HStack {
-                Spacer()
+                Spacer(minLength: 130)
                 Text("")
                 Spacer()
                 Text("AX")
                 Spacer()
-                Text("SG").offset(x: 10, y: 0)
+                Text("SG")//.offset(x: 10, y: 0)
                 Spacer()
             }
             .bold()
-            .offset(x:-20, y: 0)
+            //.offset(x:-20, y: 0)
                 
             // lumbar rows
             ForEach(indexArray, id: \.self) { item in
